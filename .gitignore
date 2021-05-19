@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# IntelliJ gunk
+**/.idea/**
+
+# Our generated csv files
+*.csv
+
 # C extensions
 *.so
 

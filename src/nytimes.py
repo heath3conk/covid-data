@@ -32,18 +32,31 @@ def adapt_yesterdays_data(df):
     return df
 
 
+def replace_nan_counts_and_empty_counties(row):
+    if pd.isna(row['daily cases']):
+        row['daily cases'] = row['cumulative cases']
+    if pd.isna(row['daily deaths']):
+        row['daily deaths'] = row['cumulative deaths']
+    return row
+
+
 def finalize_columns(df):
     df['daily cases'] = df['cumulative cases'] - df['cases']
     df['daily deaths'] = df['cumulative deaths'] - df['deaths']
-    columns_to_keep = ['todays date', 'county', 'state', 'fips', 'cumulative cases', 'cumulative deaths', 'daily cases',
-                       'daily deaths']
-    return df.filter(columns_to_keep, axis=1)
+    df = df.apply(replace_nan_counts_and_empty_counties, axis=1)
+    columns_to_keep = ['todays date', 'county', 'state', 'fips', 'cumulative cases', 'cumulative deaths',
+                       'daily cases', 'daily deaths']
+    df = df.filter(columns_to_keep, axis=1)
+    return df.rename({'todays date': 'date'}, axis=1)
 
 
-def get_ny_times_data():
+def get_ny_times_data(args):
     original_data_df = fetch_times_data()
+    if 'sanity' in args:
+        print('The NY Times data has ' + str(len(original_data_df)) + ' rows.')
+        print('The date on the last row of NYTimes data is ' + str(original_data_df.iloc[-1]['date']))
     previous_days_df = adapt_yesterdays_data(original_data_df)
     previous_with_index_df = add_common_index(previous_days_df)
     original_with_index_df = add_common_index(original_data_df)
-    joined_df = original_with_index_df.merge(previous_with_index_df, how='left')
+    joined_df = original_with_index_df.merge(previous_with_index_df, how='right')
     return finalize_columns(joined_df)
