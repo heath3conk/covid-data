@@ -16,14 +16,13 @@ def check_nan_value_fips(df):
 
 
 def manually_check_math(df):
-    last_entry_fips = df.iloc[-1]['fips']
-    df_last_entry_county = df.loc[df['fips'] == last_entry_fips]
+    random_fips = df.iloc[random.randrange(0, len(df))]['fips']
+    df_last_entry_county = df.loc[df['fips'] == random_fips]
     df_last_entry_county.to_csv('county.csv')
 
 
 def run_sanity_checks(df, args):
     get_random_sample(df)
-    if 'details' in args:
-        check_nan_value_fips(df)
-        manually_check_math(df)
+    check_nan_value_fips(df)
+    manually_check_math(df)
     print('Sanity checks finished.')

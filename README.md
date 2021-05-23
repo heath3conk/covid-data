@@ -3,21 +3,19 @@
 ## Running the script
 1. In a terminal window, navigate to the src directory
 2. Execute `python3 main.py`
-3. Wait a few minutes
-When you run the main program this way, the output csv file will be added to the src directory.
+3. Wait ~~a few minutes~~ about 18 seconds.
+4. Look for the output 'covid_data.csv' in the src directory.
 
 ### Running the script with the 'sanity' option
 If you want to see some results but don't want to open a csv file with over 1.3 million rows, follow the 
 process above and add the 'sanity' argument at the end, so the execute command is `python3 main.py sanity`.
 
-In addition to the complete csv file, this option generates a small 'random-sample.csv' file from somewhere in the middle
-of the data so you don't have to open an enormous csv to confirm the results make sense. 
+In addition to the complete csv file, this option generates four other csv files:
+ - 100-row 'random-sample.csv' file from somewhere in the middle of the data if you just want to see, you know, a random sample.
+ - The entire dataset for a random county in the 'county.csv'.
+ - The entire dataset for Rhode Island in the 'all-rhode-island.csv'.
+ - The 'nan-fips.csv' with all the rows that have empty 'fips' values and therefore no population figures.
 
-It also prints to the terminal some validation that the beginning and end of the output csv look approximately correct.
-
-See 'What I would improve' for more on these last two points.
-
-### Running the script with the 'details' option
 Run the script as `python3 main.py sanity details` and you'll get the entire dataset for a single county in the 'county.csv'
 as well as 'nan-fips.csv' file that collects those rows without 'fips' values. 
 
@@ -36,19 +34,13 @@ as well as 'nan-fips.csv' file that collects those rows without 'fips' values.
      this assumption is correct and match these rows with the state-wide population data.
 2. Adding tests.
    - *Tests > running with optional 'sanity' arg* 
-   - Most of the tasks I've handled in the sanity_check module should be tests instead.
-3. Making it faster.
-   - I can think of at least two other ways or points in the process where I could add the population data to the NYTimes 
-    data. I'm not sure if any of them would be faster, but I should try them out to see.
-4. Error handling.
+   - Some of the tasks I've handled in the sanity_check module could be tests instead.
+3. Error handling.
     - Connection errors in trying to fetch the original csv files. 
     - Decoding errors generated while converting the original csv files to dataframes.
      
 ## Sanity checks
-As I thought of ways to check that my results were making sense, I generally added them to my 'sanity_check' module. 
- - Checking the beginning and end of the result against the original data let me know that my merge-left should be a merge-right.
- - Checking that the number of rows in the original NYTimes dataset and the resulting dataframe are the same reassures me
-   that I haven't accidentally added or removed rows. (Unless I added *and* removed an equal number of rows.)
+As I thought of ways to check that my results were making sense, I generally added them to my 'sanity_check' module.
  - Looking at the single county's csv and the random-sample csv helps me understand the data in a sort of wide and deep way.
    The random sample gives me the wide view, where I can verify that the columns and generally the data in the columns show
    up as expected. The single county's data gives me the deep view to see how the data changes over time and validate that the
